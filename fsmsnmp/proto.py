@@ -44,13 +44,13 @@ class SnmpUdpClient(UdpTransport):
             # Check for SNMP errors reported
             error = self._pmod.apiPDU.getErrorStatus(pdu)
             if error:
-                logging.critical("SNMP: %s" % error.prettyPrint())
+                logging.critical("host: {} , SNMP: {}".format(self._host,error.prettyPrint()))
             else:
                 try:
                     for oid, val in self._pmod.apiPDU.getVarBinds(pdu):
                         self.on_data(oid, val, tm)
                 except Exception as e:
-                    logging.critical(e)
+                    logging.critical("host: {} , error: {}".format(self._host,e))
         self._state = self.READY
         self.stop()
         return False
