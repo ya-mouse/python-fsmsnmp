@@ -64,11 +64,11 @@ class SnmpUdpClient(UdpTransport):
             if error:
                 if error == 1: # tooBig:
                     self._split_by //= 2
-                    logging.warning('{}: split vars by {}'.format(self._host, self._split_by))
+                    logging.warning("{}: `tooBig' occuried, split vars by {}".format(self._host, self._split_by))
                     self._build_buf()
                     return False
                 else:
-                    logging.critical("{}: SNMP error({}): {}".format(self._host, type(error), error.prettyPrint()))
+                    logging.critical("{}: SNMP error: {}".format(self._host, error.prettyPrint()))
             else:
                 try:
                     for oid, val in self._pmod.apiPDU.getVarBinds(pdu):
