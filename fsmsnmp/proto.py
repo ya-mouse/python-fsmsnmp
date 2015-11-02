@@ -33,6 +33,9 @@ class SnmpUdpClient(UdpTransport):
             self._buf.append(msg)
             cnt -= self._split_by
 
+    def on_unorder(self, data):
+        return self.process_data(data)
+        
     def _build_msg(self, variables):
         # Build PDU
         pdu = self._pmod.GetRequestPDU()
