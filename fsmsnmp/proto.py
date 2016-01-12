@@ -82,8 +82,7 @@ class SnmpUdpClient(UdpTransport):
         self._bufidx = (self._bufidx + 1) % len(self._buf)
         if self._bufidx == 0:
             self._state = self.READY
-            self.stop()
-            return False
+            return self.stop()
         else:
             self._expire = tm
         return True
