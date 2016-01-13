@@ -57,6 +57,8 @@ class SnmpUdpClient(UdpTransport):
         self._retries = 0
 
         # Process data
+        if not data:
+            return False
         if tm is None:
             tm = time()
         while data:
