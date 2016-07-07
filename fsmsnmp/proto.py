@@ -51,6 +51,8 @@ class SnmpUdpClient(UdpTransport):
     def send_buf(self):
         if not len(self._buf):
             return 0
+        self._expire = self._start + self._interval
+        self._timeout = self._expire + 15
         return self._write(self._buf[self._bufidx])
 
     def process_data(self, data, tm = None):
@@ -71,9 +73,9 @@ class SnmpUdpClient(UdpTransport):
                     self._split_by //= 2
                     logging.warning("{}: `tooBig' occuried, split vars by {}".format(self._host, self._split_by))
                     self._build_buf()
-                    return False
                 else:
                     logging.critical("{}: SNMP error: {}".format(self._host, error.prettyPrint()))
+                return False
             else:
                 try:
                     for oid, val in self._pmod.apiPDU.getVarBinds(pdu):
@@ -82,11 +84,9 @@ class SnmpUdpClient(UdpTransport):
                     logging.critical(e)
 
         self._bufidx = (self._bufidx + 1) % len(self._buf)
+        self._state = self.READY
         if self._bufidx == 0:
-            self._state = self.READY
             return self.stop()
-        else:
-            self._expire = tm
         return True
 
     def on_data(self, oid, val, tm):
