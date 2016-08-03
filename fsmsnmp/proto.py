@@ -51,8 +51,6 @@ class SnmpUdpClient(UdpTransport):
     def send_buf(self):
         if not len(self._buf):
             return 0
-        self._expire = self._start + self._interval
-        self._timeout = self._expire + 15
         return self._write(self._buf[self._bufidx])
 
     def process_data(self, data, tm = None):
